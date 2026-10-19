@@ -22,7 +22,7 @@ const {chromium}=require('C:/Users/10941/.cache/codex-runtimes/codex-primary-run
  const slider=page.getByRole('slider',{name:'按日期查看曲线'});await slider.focus();await slider.press('Home');
  const beginning=await page.locator('.readout-date').innerText();await slider.press('End');const ending=await page.locator('.readout-date').innerText();assert(beginning<ending);console.log('date input',beginning,ending);
  await page.getByRole('button',{name:'策略净值',exact:true}).click();assert.equal(await page.locator('.curve-line').count(),1);
- await page.locator('#position').selectOption('held');await page.locator('#position').selectOption('auto');
+ console.log('manual position controls',await page.getByRole('combobox').count());
  const dl=page.waitForEvent('download');await page.getByRole('button',{name:'导出数据'}).click();console.log('download',(await dl).suggestedFilename());
  await page.getByRole('button',{name:'指数曲线',exact:true}).click();await page.getByRole('button',{name:'全部',exact:true}).click();
  for(const width of [320,375,390,414,768,1440]){await page.setViewportSize({width,height:900});await page.waitForTimeout(180);const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);console.log('width',width,'overflow',overflow);assert(!overflow);}

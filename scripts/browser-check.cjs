@@ -6,8 +6,8 @@ const {chromium}=require('C:/Users/10941/.cache/codex-runtimes/codex-primary-run
  await page.screenshot({path:'outputs/desktop.png',fullPage:true});
  console.log('desktop',await page.locator('.signal-title').innerText(),await page.locator('.status-bar').innerText());
  await page.getByRole('button',{name:'策略净值',exact:true}).click();await page.getByRole('button',{name:'近1年',exact:true}).click();console.log('net path',await page.locator('.chart-svg path').count());
- await page.locator('#position').selectOption('held');console.log('holding',await page.locator('.signal-title').innerText());
- await page.locator('#position').selectOption('auto');
+ console.log('manual position controls',await page.getByRole('combobox').count());
+ console.log('manual position controls',await page.getByRole('combobox').count());
  const download=page.waitForEvent('download');await page.getByRole('button',{name:'导出数据'}).click();console.log('download',(await download).suggestedFilename());
  await page.setViewportSize({width:390,height:844});await page.getByRole('button',{name:'指数曲线',exact:true}).click();await page.screenshot({path:'outputs/mobile.png',fullPage:true});
  console.log('mobile overflow',await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth));console.log('errors',JSON.stringify(errors));
