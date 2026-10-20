@@ -20,6 +20,8 @@ const localBindingConfig = {
   routes: [{ pattern: "curvecompass.top", custom_domain: true }],
   main: "./build/sites-worker.ts",
   compatibility_flags: ["nodejs_compat"],
+  triggers: { crons: ["*/30 10-15 * * mon-fri"] },
+  vars: { PUBLIC_URL: "https://curvecompass.top", EMAIL_FROM: "曲线罗盘 <signals@curvecompass.top>" },
   d1_databases: d1
     ? [
         {
@@ -28,7 +30,7 @@ const localBindingConfig = {
           database_id: SITE_CREATOR_PLACEHOLDER_DATABASE_ID,
         },
       ]
-    : [],
+    : [{ binding: "NOTIFICATIONS_DB", database_name: "curve-compass-notifications", database_id: "3f0fc77f-c590-4468-a6c4-f0be4b351f29", migrations_dir: "migrations" }],
   r2_buckets: r2
     ? [
         {

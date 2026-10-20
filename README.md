@@ -29,7 +29,7 @@ npm run dev
 
 接口失败保留历史数据，明确显示数据日期，不把历史信号当作当前可执行提示。以北京时间18点判断应有的工作日数据；未接入交易所节假日日历，因此节假日可能保守显示待更新。
 
-浏览器通知需用户授权，仅在网页打开且当前满足买卖条件时提醒，同一日期和信号去重。关闭网页不发送通知，不自动下单。
+邮件通知使用下述邮箱验证订阅流程；由服务器定时检查，无需网页保持打开，不自动下单。
 
 官方接口：`https://www.csindex.com.cn/csindex-home/perf/index-perf?indexCode=H00300&startDate=20261014&endDate=20261019`，另一个指数使用H11023。
 
@@ -62,3 +62,33 @@ npm run deploy
 如在 Cloudflare 控制台连接 GitHub 仓库，构建命令使用 `npm run build`，部署命令使用 `npx wrangler deploy --config dist/server/wrangler.json`，项目根目录为仓库根目录。
 
 正式自定义域名：`https://curvecompass.top`，在 `vite.config.ts` 中通过 Workers Custom Domain 配置；域名须由 Cloudflare DNS 激活。原 `workers.dev` 地址继续保留。
+
+## 邮件订阅（Resend + Cloudflare D1）
+
+- 前端按钮弹出邮箱订阅框；用户同意接收通知后发送确认链接。链接30分钟有效，打开后需点击确认，防止邮件预扫描误订阅。
+- 未配置发信服务时 `/api/email/status` 返回 `ready:false`，网页不会收集邮箱或声称订阅成功。
+- Worker Cron：UTC 周一至周五 10:00–15:30 每半小时执行，即北京时间18:00–23:30。只发送当天、数据新鲜且触发 buy/sell 的信号；等待、持有、过期数据均不发。不补发历史信号。
+- D1 记录订阅和发送状态，按订阅者/信号日/信号唯一去重，发送租约防止并发重复，Resend 幂等键防止重试重复。失败最多重试6次。
+- 每封信附退订链接，链接打开后需确认退订，再删除邮箱和该订阅的发送记录。
+- 验证邮件限制：每IP每小时5次、每邮箱每小时3次、全站每天30次。信号每天最多80次调用，验证与信号合计每天90次调用，按UTC日计；这是适合小规模使用的应用限制，非无限发信。超过容量需先调整服务套餐和应用限额。
+- 批量任务每轮取100个尚未发送成功的有效订阅，达到配额或服务商限流会记录失败并后续重试；当天窗口结束后不补发旧日信号。
+- 保存邮箱、验证状态和投递状态到 D1；IP只保存加盐哈希用于短期频率限制，过期计数与未确认记录由任务清理。不提供公开订阅名单接口，不在日志中输出邮箱/令牌。
+
+### 启用步骤
+
+1. 在 Resend 注册账号，在 Domains 添加 `curvecompass.top`，按控制台记录完成 SPF/DKIM 等 DNS 验证。不要覆盖网站现有 DNS，不重复建立冲突 SPF 记录。
+2. 创建仅发信权限、限定该域名的 API Key。在本项目目录运行以下命令，在 CLI 提示中输入密钥，密钥不可提交到 GitHub 或聊天：
+
+```powershell
+node node_modules/wrangler/bin/wrangler.js secret put RESEND_API_KEY --name curve-compass
+```
+
+3. 发件人已配置为 `曲线罗盘 <signals@curvecompass.top>`。`EMAIL_TOKEN_SECRET` 已通过 Worker Secret 单独生成，不要随意更换，否则已有验证/退订链接失效。新增环境时自行生成强随机值并设置。
+4. D1绑定 `NOTIFICATIONS_DB`；初始化SQL在 `migrations/0001_email.sql`，已在当前生产环境执行。迁移到其他账号时须创建新库并执行迁移。
+5. 部署后检查 `/api/email/status`，用自己的邮箱走完整确认和退订流程，并在 Resend 控制台确认投递结果。HTTP/API接受仅代表已提交给服务商，不承诺收件箱送达。服务商账号/域名未就绪时仍不能真正发信。
+
+本地测试可通过 `.dev.vars` 提供密钥，不提交环境文件。后端测试使用真实内存 SQLite 与模拟发信服务，不对外发送邮件：
+
+```powershell
+node --test lib/email-notifications.test.mjs
+```
