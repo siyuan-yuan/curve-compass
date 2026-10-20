@@ -41,3 +41,5 @@ node node_modules/typescript/bin/tsc --noEmit
 种子数据来自本项目 `chart_replica/沪深300与债券基金_双公式.csv`，截至2026-10-14：5284条共同交易日，5笔完成交易，累计收益3508.168967258214%，年化17.90129906449176%，最大回撤-30.94961178805251%。后续实时数据可能改变最新指标。
 
 界面设计参考 [Anthropic frontend-design skill](https://github.com/anthropics/skills/tree/main/skills/frontend-design)。
+
+当前界面按 [Apple Design skill](https://github.com/bowen31337/apple-design) 调整，支持系统明暗主题、减少动态效果/透明度和增强对比度；切换控件采用可中断弹簧反馈。
