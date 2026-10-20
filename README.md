@@ -47,3 +47,16 @@ node node_modules/typescript/bin/tsc --noEmit
 当前界面按 [Apple Design skill](https://github.com/bowen31337/apple-design) 调整，支持系统明暗主题、减少动态效果/透明度和增强对比度；切换控件采用可中断弹簧反馈。
 
 液态玻璃使用 [liquid-glass-react](https://github.com/LeonardSEO/liquid-glass-react) 的组件源码，位于 `components/liquid-glass/`，保留上游许可证。支持真实边缘折射、高光胶囊选框、曲线展开，以及右侧浮框自动向左避让。
+
+## 公网部署（Cloudflare Workers）
+
+本项目同时包含网页和 `/api/market` 后端，请部署到 Workers，不使用仅托管静态文件的 GitHub Pages。
+
+```powershell
+npx wrangler login
+npm run deploy
+```
+
+部署名称为 `curve-compass`，部署成功后终端会显示可分享的 `https://curve-compass.<账号子域>.workers.dev` 地址。网站无需访问者登录；指数数据在服务器获取。无需设置 API 密钥，也无需购买域名。
+
+如在 Cloudflare 控制台连接 GitHub 仓库，构建命令使用 `npm run build`，部署命令使用 `npx wrangler deploy --config dist/server/wrangler.json`，项目根目录为仓库根目录。
