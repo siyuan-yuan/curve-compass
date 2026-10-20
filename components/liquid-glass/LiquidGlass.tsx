@@ -119,7 +119,7 @@ export function LiquidGlass({
   }, [])
 
   const maps = useMemo<Maps | null>(() => {
-    if (!size || size.w < 2 || size.h < 2) return null
+    if (!svgSupported || !size || size.w < 2 || size.h < 2) return null
     const minSide = Math.min(size.w, size.h)
     // Apple's rim is roughly a quarter of the short side, capped for big panels.
     const bezel = bezelProp ?? Math.max(6, Math.min(minSide * 0.25, Math.min(radius, minSide / 2), 56))
@@ -144,7 +144,7 @@ export function LiquidGlass({
       if (mapCache.size > 64) mapCache.delete(mapCache.keys().next().value!)
     }
     return { ...base, scale: base.scale * refraction }
-  }, [size, radius, bezelProp, thicknessProp, ior, profile, refraction, lightAngle])
+  }, [svgSupported, size, radius, bezelProp, thicknessProp, ior, profile, refraction, lightAngle])
 
   const setPointer = useCallback((e: ReactPointerEvent<HTMLDivElement>) => {
     const el = ref.current

@@ -323,3 +323,20 @@ footer>div>span:first-child { font-size: .9375rem; font-weight: 500; color: var(
 @media(max-width:700px) and (prefers-reduced-motion:reduce) {
  .curve-reveal-mask { animation:none;transform:scaleX(1); }
 }
+
+/* WebKit material: Apple Design fallback, without bitmap masks or blend rims. */
+.lg--fallback .lg__tint {
+ -webkit-mask-image:none!important;mask-image:none!important;
+ box-shadow:inset 0 1px 1px var(--glass-rim),inset 0 -1px 0 rgba(255,255,255,.16);
+}
+.lg--fallback .lg__specular { display:none; }
+.lg--fallback:after {
+ content:'';position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+ border:1px solid var(--glass-rim);z-index:2;
+ background:linear-gradient(145deg,rgba(255,255,255,.12),transparent 35%,transparent 70%,rgba(255,255,255,.07));
+}
+@media(max-width:700px) {
+ .liquid-material.lg--fallback { --lg-shadow:0 8px 24px rgba(70,100,130,.05);border:0; }
+ .selection-glass.lg--fallback { --lg-shadow:0 2px 8px rgba(70,100,130,.06);border:0; }
+}
+@media(prefers-reduced-transparency:reduce) { .lg--fallback:after { background:none; } }
