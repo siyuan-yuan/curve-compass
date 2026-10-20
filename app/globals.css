@@ -340,3 +340,14 @@ footer>div>span:first-child { font-size: .9375rem; font-weight: 500; color: var(
  .selection-glass.lg--fallback { --lg-shadow:0 2px 8px rgba(70,100,130,.06);border:0; }
 }
 @media(prefers-reduced-transparency:reduce) { .lg--fallback:after { background:none; } }
+
+/* Mobile charts use CSS-pixel coordinates instead of shrinking a 1000px desktop SVG. */
+@media(max-width:700px) {
+ .chart-svg { height:320px;aspect-ratio:auto; }
+ .chart-heading { padding:0 0 12px; }
+ .legend { flex-wrap:wrap;justify-content:flex-start;gap:8px 14px;margin-left:0;font-size:11px;line-height:1.6; }
+ .legend i { width:14px; }
+ .chart-readout { flex-wrap:wrap;font-size:12px;gap:8px 14px;padding:12px 0; }
+ .chart-note { font-size:10px; }
+ .range-switch button { font-size:11px; }
+}
