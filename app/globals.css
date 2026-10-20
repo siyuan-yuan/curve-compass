@@ -467,3 +467,12 @@ footer>div>span:first-child { font-size: .9375rem; font-weight: 500; color: var(
  .is-expanded .chart-summary { padding-bottom:4px; }
  .is-expanded .chart-controls { padding-top:0; }
 }
+
+/* Mobile expansion is a labeled action immediately above the plot's right edge. */
+.plot-tools { display:none; }
+.chart-panel:not(.is-expanded) .chart-close { display:none; }
+@media(max-width:700px) {
+ .chart-panel:not(.is-expanded) .plot-tools { display:flex;justify-content:flex-end;margin:-2px 0 4px; }
+ .plot-expand { width:auto;min-height:44px;height:44px;padding:0 12px;gap:7px;border-radius:99px;font-size:12px;font-weight:500;color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,var(--surface)); }
+}
+.is-expanded .plot-tools { display:none; }
