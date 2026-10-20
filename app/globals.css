@@ -3,6 +3,10 @@
 
 :root {
   --page: #f5f5f7;
+  --glass-panel: rgba(255,255,255,.60);
+  --tooltip-tint: rgba(255,255,255,.94);
+  --ambient-blue: rgba(115,175,245,.22);
+  --ambient-mint: rgba(139,207,193,.16);
   --accent: #0066cc;
   --button-fill: #0066cc;
   --surface: var(--bg-tertiary);
@@ -19,7 +23,7 @@
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 * { box-sizing: border-box; }
-body { background: var(--page); color: var(--label); font-family: var(--font-sans); font-optical-sizing: auto; }
+body { background: radial-gradient(ellipse at 8% 24%,var(--ambient-blue),transparent 46%),radial-gradient(ellipse at 95% 54%,var(--ambient-mint),transparent 48%),var(--page); background-attachment: fixed; color: var(--label); font-family: var(--font-sans); font-optical-sizing: auto; }
 html { scroll-behavior: smooth; scroll-padding-top: 108px; }
 a { color: inherit; text-decoration: none; }
 button,input { font: inherit; -webkit-tap-highlight-color: transparent; }
@@ -95,14 +99,18 @@ h2 { font-size: var(--text-title-3); font-weight: 600; line-height: 1.3; letter-
 .segmented:before { content: ''; position: absolute; inset: 3px auto 3px 3px; width: calc((100% - 6px)/2); background: var(--surface); border-radius: 8px; box-shadow: var(--shadow-1); transform: translateX(calc(var(--tab)*100%)); z-index: -1; }
 .segmented button { font-size: .6875rem; font-weight: 500; background: transparent; border: 0; width: 83px; min-height: 36px; color: var(--label-secondary); }
 .segmented button.on { color: var(--label); }
-.chart { background: var(--surface); overflow: hidden; }
+.chart { background: transparent; overflow: hidden; }
 .chart-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--label-secondary); font-size: .625rem; padding: 0 3px 9px; }
 .legend { display: flex; align-items: center; gap: 15px; }
 .legend>span { display: flex; align-items: center; gap: 6px; }
 .legend i { width: 13px; height: 3px; display: block; border-radius: 3px; }
 .legend .red { background: var(--series-equity); }.legend .gold { background: var(--series-yellow); }.legend .blue { background: var(--series-blue); }
 .chart-svg { width: 100%; display: block; touch-action: pan-y; }
-.curve-line { stroke-dasharray: none; stroke-dashoffset: 0; }
+.curve-line { stroke-dasharray: 1; stroke-dashoffset: 0; animation: curve-unfold 1.35s cubic-bezier(.22,.61,.36,1) both; }
+.curve-area { animation: curve-fill 1.5s ease-out both; }
+@keyframes curve-unfold { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes curve-fill { from { opacity: 0; } to { opacity: 1; } }
+.chart-tooltip { filter: drop-shadow(0 4px 10px rgba(0,0,0,.12)); }
 .chart-readout { display: flex; align-items: center; gap: 18px; color: var(--label-secondary); font-size: .6875rem; padding: 8px 4px 12px; font-variant-numeric: tabular-nums; }
 .readout-date { color: var(--label); font-weight: 500; }
 .chart-readout b { color: var(--label); font-weight: 600; margin-left: 5px; }
@@ -173,8 +181,16 @@ footer>div>span:first-child { font-size: .9375rem; font-weight: 500; color: var(
 .toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 30; max-width: 90vw; display: flex; align-items: center; gap: 10px; padding: 15px 20px; border-radius: var(--radius-xl); background: var(--material-thick-tint); -webkit-backdrop-filter: blur(20px) saturate(180%); backdrop-filter: blur(20px) saturate(180%); color: var(--label); box-shadow: inset 0 1px 0 var(--glass-rim),var(--shadow-3); font-size: .8125rem; line-height: 1.6; }
 .spin { animation: spin 1s linear infinite; } @keyframes spin { to { transform: rotate(360deg); } }
 
+.metrics>div,.chart-panel,.signal-panel,.history-panel {
+ background: var(--glass-panel);
+ -webkit-backdrop-filter: blur(28px) saturate(170%);
+ backdrop-filter: blur(28px) saturate(170%);
+ border: 1px solid var(--glass-rim);
+ box-shadow: inset 0 1px 0 rgba(255,255,255,.5),0 10px 32px rgba(30,60,90,.05),0 1px 4px rgba(30,60,90,.03);
+}
+
 @media(prefers-color-scheme:dark) {
- :root { --page:#000; --accent:#64a8ff; --surface:var(--bg-secondary); --label-secondary:#a1a1a6; --positive:#63d38d; --series-equity:#ff8a80; --series-yellow:#edbf55; --series-blue:#5ca8ff; --chart-grid:#303034; --chart-label:#a1a1a6; --panel-line:rgba(235,235,245,.13); --glass-rim:rgba(255,255,255,.13); --glass-shadow:0 8px 32px rgba(0,0,0,.25); }
+ :root { --page:#080b10; --glass-panel:rgba(30,34,42,.64); --tooltip-tint:rgba(32,36,44,.96); --ambient-blue:rgba(49,105,178,.19); --ambient-mint:rgba(58,121,115,.13); --accent:#64a8ff; --surface:var(--bg-secondary); --label-secondary:#a1a1a6; --positive:#63d38d; --series-equity:#ff8a80; --series-yellow:#edbf55; --series-blue:#5ca8ff; --chart-grid:#303034; --chart-label:#a1a1a6; --panel-line:rgba(235,235,245,.13); --glass-rim:rgba(255,255,255,.13); --glass-shadow:0 8px 32px rgba(0,0,0,.25); }
 }
 @media(max-width:1240px) {
  .content { margin:0 32px; } header { padding:0 40px; }.sidebar { width:calc(100% - 64px); }
@@ -221,10 +237,63 @@ footer>div>span:first-child { font-size: .9375rem; font-weight: 500; color: var(
  .curve-line { stroke-dashoffset:0; }
 }
 @media(prefers-reduced-transparency:reduce) {
- .sidebar,.toast { background:var(--surface);-webkit-backdrop-filter:none;backdrop-filter:none; }
+ .sidebar,.toast,.metrics>div,.chart-panel,.signal-panel,.history-panel { background:var(--surface);-webkit-backdrop-filter:none;backdrop-filter:none; }
 }
 @media(prefers-contrast:more) {
  .sidebar,.chart-panel,.signal-panel,.history-panel,.metrics>div { outline:1px solid var(--label); }
  :root { --label-secondary:var(--label);--chart-label:var(--label); }
 }
-@supports not (backdrop-filter:blur(1px)) { .sidebar,.toast { background:var(--surface); } }
+@supports not (backdrop-filter:blur(1px)) { .sidebar,.toast,.metrics>div,.chart-panel,.signal-panel,.history-panel { background:var(--surface); } }
+
+/* Optical material from liquid-glass-react: measured refraction map + specular rim.
+   Material and content are siblings so the content itself stays crisp. */
+:root { --liquid-tint:rgba(255,255,255,.25); --ambient-blue:rgba(87,156,245,.32); --ambient-mint:rgba(89,201,179,.24); }
+.sidebar,.metrics>div,.chart-panel,.signal-panel,.history-panel {
+ isolation:isolate; background:transparent;
+ -webkit-backdrop-filter:none; backdrop-filter:none;
+ border:0; border-radius:24px;
+ box-shadow:none;
+}
+.metrics>div,.chart-panel,.signal-panel,.history-panel { position:relative; }
+.liquid-material.lg {
+ position:absolute; inset:0; z-index:-1; pointer-events:none;
+ transform:none; transition:none;
+ --lg-shadow:0 12px 36px rgba(40,70,110,.09),0 1px 3px rgba(30,60,90,.06);
+}
+.liquid-material .lg__tint { box-shadow:inset 0 1px 0 rgba(255,255,255,.65),inset 0 -1px 0 rgba(255,255,255,.24); }
+@media(prefers-color-scheme:dark) {
+ :root { --liquid-tint:rgba(24,30,42,.48); --ambient-blue:rgba(49,105,178,.28); --ambient-mint:rgba(58,121,115,.21); }
+ .liquid-material.lg { --lg-shadow:0 12px 36px rgba(0,0,0,.24); }
+ .liquid-material .lg__tint { box-shadow:inset 0 1px 0 rgba(255,255,255,.2),inset 0 -1px 0 rgba(255,255,255,.07); }
+}
+@media(prefers-reduced-transparency:reduce) {
+ .liquid-material.lg { backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--surface); }
+ .liquid-material .lg__specular { display:none; }
+}
+/* Sculpted glass selectors: retain the existing light/dark palette. */
+.sidebar nav,.segmented,.range-switch {
+ border-radius:999px;
+ box-shadow:inset 0 1px 3px rgba(0,0,0,.045),inset 0 -1px 0 rgba(255,255,255,.45);
+}
+.sidebar nav:before,.segmented:before,.range-switch:before {
+ border-radius:999px;
+ border:1px solid transparent;
+ background:linear-gradient(165deg,rgba(255,255,255,.30),transparent 40%,rgba(255,255,255,.18)) padding-box,
+   linear-gradient(150deg,rgba(255,255,255,.95),rgba(255,255,255,.20) 38%,rgba(120,143,164,.22) 65%,rgba(255,255,255,.9)) border-box,
+   var(--surface);
+ box-shadow:inset 0 2px 3px rgba(255,255,255,.9),inset 0 -3px 5px rgba(101,130,154,.10),0 2px 5px rgba(30,50,70,.11),0 0 0 .5px rgba(110,135,155,.12);
+}
+.sidebar nav button,.segmented button,.range-switch button { border-radius:999px; }
+.sidebar nav button.selected,.segmented button.on,.range-switch button.on { text-shadow:0 1px 0 rgba(255,255,255,.7); }
+@media(prefers-color-scheme:dark) {
+ .sidebar nav,.segmented,.range-switch { box-shadow:inset 0 1px 4px rgba(0,0,0,.2),inset 0 -1px 0 rgba(255,255,255,.05); }
+ .sidebar nav:before,.segmented:before,.range-switch:before {
+ background:linear-gradient(165deg,rgba(255,255,255,.10),transparent 45%,rgba(255,255,255,.04)) padding-box,
+   linear-gradient(150deg,rgba(255,255,255,.4),rgba(255,255,255,.05) 40%,rgba(255,255,255,.08) 65%,rgba(255,255,255,.3)) border-box,var(--surface);
+ box-shadow:inset 0 1px 2px rgba(255,255,255,.18),inset 0 -2px 5px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.25);
+ }
+ .sidebar nav button.selected,.segmented button.on,.range-switch button.on { text-shadow:none; }
+}
+@media(prefers-contrast:more) {
+ .sidebar nav:before,.segmented:before,.range-switch:before { border-color:var(--label); }
+}

@@ -2,6 +2,8 @@
 
 沪深300全收益（H00300）与中证债券型基金指数（H11023）的双曲线观察网页。
 
+这是独立的「曲线罗盘」项目，不包含量化选基项目。
+
 ## 运行
 
 ```powershell
@@ -38,8 +40,10 @@ node --test lib/strategy.test.mjs
 node node_modules/typescript/bin/tsc --noEmit
 ```
 
-种子数据来自本项目 `chart_replica/沪深300与债券基金_双公式.csv`，截至2026-10-14：5284条共同交易日，5笔完成交易，累计收益3508.168967258214%，年化17.90129906449176%，最大回撤-30.94961178805251%。后续实时数据可能改变最新指标。
+历史种子数据随源码保存在 `lib/seed.json`（整理自原始双公式图表数据），截至2026-10-14：5284条共同交易日，5笔完成交易，累计收益3508.168967258214%，年化17.90129906449176%，最大回撤-30.94961178805251%。后续实时数据可能改变最新指标。
 
 界面设计参考 [Anthropic frontend-design skill](https://github.com/anthropics/skills/tree/main/skills/frontend-design)。
 
 当前界面按 [Apple Design skill](https://github.com/bowen31337/apple-design) 调整，支持系统明暗主题、减少动态效果/透明度和增强对比度；切换控件采用可中断弹簧反馈。
+
+液态玻璃使用 [liquid-glass-react](https://github.com/LeonardSEO/liquid-glass-react) 的组件源码，位于 `components/liquid-glass/`，保留上游许可证。支持真实边缘折射、高光胶囊选框、曲线展开，以及右侧浮框自动向左避让。
