@@ -270,30 +270,28 @@ footer>div>span:first-child { font-size: .9375rem; font-weight: 500; color: var(
  .liquid-material.lg { backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--surface); }
  .liquid-material .lg__specular { display:none; }
 }
-/* Sculpted glass selectors: retain the existing light/dark palette. */
-.sidebar nav,.segmented,.range-switch {
- border-radius:999px;
- box-shadow:inset 0 1px 3px rgba(0,0,0,.045),inset 0 -1px 0 rgba(255,255,255,.45);
+/* The selection lens uses upstream LiquidGlass maps, not a painted pseudo-element. */
+:root { --selection-tint:rgba(255,255,255,.36); }
+.sidebar nav,.segmented,.range-switch { border-radius:999px; }
+.sidebar nav:before,.segmented:before,.range-switch:before { content:none; }
+.selection-glass.lg {
+ position:absolute; inset:3px auto 3px 3px; z-index:-1; pointer-events:none;
+ height:auto; transition:none;
+ --lg-shadow:0 2px 8px rgba(25,45,65,.10),0 0 0 .5px rgba(255,255,255,.48);
 }
-.sidebar nav:before,.segmented:before,.range-switch:before {
- border-radius:999px;
- border:1px solid transparent;
- background:linear-gradient(165deg,rgba(255,255,255,.30),transparent 40%,rgba(255,255,255,.18)) padding-box,
-   linear-gradient(150deg,rgba(255,255,255,.95),rgba(255,255,255,.20) 38%,rgba(120,143,164,.22) 65%,rgba(255,255,255,.9)) border-box,
-   var(--surface);
- box-shadow:inset 0 2px 3px rgba(255,255,255,.9),inset 0 -3px 5px rgba(101,130,154,.10),0 2px 5px rgba(30,50,70,.11),0 0 0 .5px rgba(110,135,155,.12);
-}
+.sidebar nav .selection-glass { width:116px; transform:translateX(calc(var(--nav-index)*100%)); }
+.segmented .selection-glass { width:calc((100% - 6px)/2); transform:translateX(calc(var(--tab)*100%)); }
+.range-switch .selection-glass { width:calc((100% - 6px)/5); transform:translateX(calc(var(--range)*100%)); }
 .sidebar nav button,.segmented button,.range-switch button { border-radius:999px; }
-.sidebar nav button.selected,.segmented button.on,.range-switch button.on { text-shadow:0 1px 0 rgba(255,255,255,.7); }
+@media(max-width:940px) { .sidebar nav .selection-glass { width:108px; } }
+@media(max-width:700px) { .sidebar nav .selection-glass { width:45px;inset:0 auto 0 0; } }
+@media(max-width:380px) { .sidebar nav .selection-glass { width:44px; } }
 @media(prefers-color-scheme:dark) {
- .sidebar nav,.segmented,.range-switch { box-shadow:inset 0 1px 4px rgba(0,0,0,.2),inset 0 -1px 0 rgba(255,255,255,.05); }
- .sidebar nav:before,.segmented:before,.range-switch:before {
- background:linear-gradient(165deg,rgba(255,255,255,.10),transparent 45%,rgba(255,255,255,.04)) padding-box,
-   linear-gradient(150deg,rgba(255,255,255,.4),rgba(255,255,255,.05) 40%,rgba(255,255,255,.08) 65%,rgba(255,255,255,.3)) border-box,var(--surface);
- box-shadow:inset 0 1px 2px rgba(255,255,255,.18),inset 0 -2px 5px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.25);
- }
- .sidebar nav button.selected,.segmented button.on,.range-switch button.on { text-shadow:none; }
+ :root { --selection-tint:rgba(65,72,84,.42); }
+ .selection-glass.lg { --lg-shadow:0 2px 8px rgba(0,0,0,.24),0 0 0 .5px rgba(255,255,255,.15); }
 }
-@media(prefers-contrast:more) {
- .sidebar nav:before,.segmented:before,.range-switch:before { border-color:var(--label); }
+@media(prefers-reduced-transparency:reduce) {
+ .selection-glass.lg { backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--surface); }
+ .selection-glass .lg__specular { display:none; }
 }
+@media(prefers-contrast:more) { .selection-glass.lg { outline:1px solid var(--label); } }
