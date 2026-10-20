@@ -60,3 +60,5 @@ npm run deploy
 部署名称为 `curve-compass`，部署成功后终端会显示可分享的 `https://curve-compass.<账号子域>.workers.dev` 地址。网站无需访问者登录；指数数据在服务器获取。无需设置 API 密钥，也无需购买域名。
 
 如在 Cloudflare 控制台连接 GitHub 仓库，构建命令使用 `npm run build`，部署命令使用 `npx wrangler deploy --config dist/server/wrangler.json`，项目根目录为仓库根目录。
+
+正式自定义域名：`https://curvecompass.top`，在 `vite.config.ts` 中通过 Workers Custom Domain 配置；域名须由 Cloudflare DNS 激活。原 `workers.dev` 地址继续保留。
