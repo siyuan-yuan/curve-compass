@@ -383,3 +383,10 @@ footer>div>span:first-child { font-size: .9375rem; font-weight: 500; color: var(
 @media(orientation:portrait) {
  .chart-panel.is-expanded { inset:auto;left:50%;top:50%;width:100dvh;height:100dvw;transform:translate(-50%,-50%) rotate(90deg); }
 }
+
+/* A rotated or physically landscape phone uses the same time-axis reveal. */
+.is-expanded .curve-drawing { clip-path:url(#mobile-curve-clip); }
+.is-expanded .curve-reveal-mask { transform-box:fill-box;transform-origin:left center;animation:mobile-curve-reveal .85s linear both; }
+.is-expanded .curve-line { animation:none;stroke-dasharray:none;stroke-dashoffset:0; }
+.is-expanded .curve-area { animation:none; }
+@media(prefers-reduced-motion:reduce) { .is-expanded .curve-reveal-mask { animation:none;transform:scaleX(1); } }
